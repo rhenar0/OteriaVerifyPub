@@ -29,7 +29,7 @@ class SlashBot(commands.Bot):
         super().__init__(command_prefix='/', intents=intents, description=description)
 
     async def setup_hook(self) -> None:
-        self.tree.copy_global_to(guild=discord.Object(id=1097814563044479026))
+        self.tree.copy_global_to(guild=discord.Object(id=1131288634549620897))
         await self.tree.sync()
 
 bot = SlashBot()
@@ -65,9 +65,9 @@ async def verify(uuid):
         conn.commit()
         c.execute("SELECT * FROM verif WHERE GUID_verif = ?", (uuid,))
         datad = c.fetchone()
-        webhook = DiscordWebhook(url="https://discord.com/api/webhooks/1097874849189347348/vyBx4TX8dE7uQexoz2nw3qHSwEyC8qwRpKGJj2Bqrh8U02EsHsyoc-eAnZiQVTl6ugBu", content="/accept " + datad[4] + " 4862fc26-b67b-4f29-9891-8058a7f4c3ac " + datad[5] + "")
+        webhook = DiscordWebhook(url="https://discord.com/api/webhooks/1131296698422010047/UHbTd42PIjc1I0O6jJw8Iw83T-C_jJpbQ3KhE1fwMp1VFlJnw6jGQXUAyGebfWGX-R6i", content="/accept " + datad[4] + " 4862fc26-b67b-4f29-9891-8058a7f4c3ac " + datad[5] + "")
         webhook.execute()
-        return redirect("https://discord.com/channels/1027513310511378432/1030426558973882408", code=302)
+        return redirect("https://discord.com/channels/964988687660249179/1131288634549620897", code=302)
 
 @bot.tree.command(name="verify", description="Permet de verifier que vous etes bien de chez Oteria.")
 async def _verify(interaction: discord.Interaction) -> None:
@@ -76,12 +76,12 @@ async def _verify(interaction: discord.Interaction) -> None:
 
 @bot.event
 async def on_message(message):
-    if message.channel.id == 1097869598147215540:
+    if message.channel.id == 1131288634549620897:
         if message.content.startswith("/accept"):
             parsed = message.content.split()
             user = bot.get_user(int(parsed[1]))
             user = await message.guild.fetch_member(user.id)
-            role = discord.utils.get(message.guild.roles, name="Futurs admis")
+            role = discord.utils.get(message.guild.roles, name="en_attente_de_role")
             await user.add_roles(role)
             await user.edit(nick=f'{user.name} ({parsed[3]})')
             await message.channel.send(f'{user} a bien ete accepte !')
@@ -123,15 +123,15 @@ class Questionnaire(ui.Modal, title='Verification Oteria'):
         conn.close()
 
         msg = MIMEMultipart()
-        msg['From'] = "oterihack@gmail.com"
+        msg['From'] = "no-reply@oteria.fr"
         msg['To'] = self.answer.value
-        msg['Subject'] = "Confirmation de votre compte Oteriahack"
-        message = "Bonjour " + self.name.value + ",\n\nMerci de ton inscription sur notre Discord.\n\nDerniere étape : Verifier ton adresse mail. \nIl suffit de cliquer ici : http://blue-project.co:6969/verify/" + str(myuuid) + "\n\nCordialement,\n\nL'equipe Oterihack"
+        msg['Subject'] = "Confirmation de votre compte Oteria"
+        message = "Bonjour " + self.name.value + ",\n\nMerci de ton inscription sur notre Discord.\n\nDerniere étape : Verifier ton adresse mail. \nIl suffit de cliquer ici : http://167.71.43.194:6969/verify/" + str(myuuid) + "\n\nCordialement,\n\nL'equipe du Discord Oteria"
         msg.attach(MIMEText(message))
 
         smtpObj = smtplib.SMTP('smtp-relay.sendinblue.com', 587)
-        smtpObj.login('hugo.chassaing@oteria.fr', 'ZFw7SJNGx1EDbOc9')
-        smtpObj.sendmail('oterihack@gmail.com', self.answer.value, msg.as_string())
+        smtpObj.login('hugo.chassaing@oteria.fr', '')
+        smtpObj.sendmail('no-reply@oteria.fr', self.answer.value, msg.as_string())
         smtpObj.quit()
         print("Successfully sent email")
 
